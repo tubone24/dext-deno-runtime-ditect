@@ -29,3 +29,25 @@ jobs:
       
       - name: Create Dext Project
         run: dext create testproject
+  test-nocheck:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        deno:
+          ["1.12.2", "1.11.5", "1.10.3", "1.9.2", "1.8.3", "1.8.2", "1.7.5", "1.6.3", "1.5.4", "1.4.6", canary]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno }}
+
+      - name: Install Dext
+        run: deno install --allow-read --allow-write --allow-env --allow-net --allow-run --unstable --no-check -f -n dext https://deno.land/x/dext@0.10.5/cli.ts
+      
+      - name: Create Dext Project
+        run: dext create testproject
